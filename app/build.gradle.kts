@@ -15,24 +15,25 @@ plugins {
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
-    // Use the Kotlin JUnit 5 integration.
+    implementation("org.telegram:telegrambots:6.5.0")
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+
+    implementation("org.slf4j:slf4j-api:2.0.6")
+    implementation("ch.qos.logback:logback-core:1.4.5")
+    implementation("ch.qos.logback:logback-classic:1.4.5")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
-    // Use the JUnit 5 integration.
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
-
-    // This dependency is used by the application.
-    implementation("com.google.guava:guava:31.1-jre")
 }
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.domanskii.homeAlarmBot.AppKt")
+    mainClass.set("com.domanskii.homealarmbot.AppKt")
 }
 
 tasks.named<Test>("test") {
