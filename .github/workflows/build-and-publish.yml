@@ -25,6 +25,11 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
+      - name: Put jar to artifacts
+      - uses: actions/upload-artifact@master
+        with:
+          name: jar-file
+          path: app/build/libs/app.jar
 
   publish:
     needs: build
@@ -37,6 +42,11 @@ jobs:
       id-token: write
 
     steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: jar-file
+          path: app.jar
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
