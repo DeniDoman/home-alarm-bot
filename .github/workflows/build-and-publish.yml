@@ -26,7 +26,7 @@ jobs:
         with:
           arguments: build
       - name: Put jar to artifacts
-      - uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@master
         with:
           name: jar-file
           path: app/build/libs/app.jar
@@ -42,7 +42,8 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/download-artifact@master
+      - name: Get jar from artifacts
+        uses: actions/download-artifact@master
         with:
           name: jar-file
           path: app.jar
