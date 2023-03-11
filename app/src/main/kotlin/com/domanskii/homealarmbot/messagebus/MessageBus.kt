@@ -12,7 +12,6 @@ class MessageBus {
         for (subscriber in subscribers.filter { it.second == topic }) {
             log.debug { "Notifying '${subscriber.first}' observer about '$message' message in '$topic' topic" }
             subscriber.first.onMessage(topic, message)
-
         }
     }
 

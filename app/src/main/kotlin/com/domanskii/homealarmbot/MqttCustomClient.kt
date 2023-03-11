@@ -31,6 +31,7 @@ class MqttCustomClient(
         options.password = password.toCharArray()
         options.connectionTimeout = 60
         options.keepAliveInterval = 60
+        options.isAutomaticReconnect = true
     }
 
     fun connect() {
@@ -38,7 +39,6 @@ class MqttCustomClient(
         client.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable?) {
                 log.error { "Connection to MQTT server has been lost with '$cause' cause" }
-                // TODO("Not yet implemented")
             }
 
             override fun messageArrived(topic: String, message: MqttMessage) {
@@ -48,8 +48,7 @@ class MqttCustomClient(
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
-                log.info { "Message delivery has completed" }
-                // TODO("Not yet implemented")
+                log.debug { "Message delivery has completed" }
             }
 
         })
@@ -70,12 +69,19 @@ class MqttCustomClient(
             log.debug { "Ignoring incoming message with irrelevant '$topic' topic" }
             return
         }
+        sendMqttMessage(message)
+    }
 
+    private fun sendMqttMessage(message: String) {
         val mqttMessage = MqttMessage()
         mqttMessage.payload = message.toByteArray()
         mqttMessage.qos = 2
 
-        log.debug { "Publishing '${String(mqttMessage.payload)}' message to '$mqttOutcomeTopic' topic" }
-        client.publish(mqttOutcomeTopic, mqttMessage)
+        try {
+            log.debug { "Publishing '${String(mqttMessage.payload)}' message to '$mqttOutcomeTopic' topic" }
+            client.publish(mqttOutcomeTopic, mqttMessage)
+        } catch (e: Exception) {
+            log.error(e) { "Error while sending MQTT '$message' message to '$mqttOutcomeTopic' topic" }
+        }
     }
 }

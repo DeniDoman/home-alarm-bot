@@ -24,11 +24,11 @@ class App {
         assert(usersList.isNotEmpty())
 
         val messageBus = MessageBus()
-        val mqtt = MqttCustomClient(mqttAddress, mqttClientId, mqttUser, mqttPassword, messageBus)
-        val alarmBot = HomeAlarmBot(tgToken, usersList, messageBus)
-        mqtt.connect()
-
         val botsApi = TelegramBotsApi(DefaultBotSession::class.java)
+        val alarmBot = HomeAlarmBot(tgToken, usersList, messageBus)
+        val mqtt = MqttCustomClient(mqttAddress, mqttClientId, mqttUser, mqttPassword, messageBus)
+
+        mqtt.connect()
         botsApi.registerBot(alarmBot)
     }
 }
