@@ -7,10 +7,8 @@
  */
 
 plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
-
-    // Apply the application plugin to add support for building a CLI application in Java.
+    id("com.github.johnrengelman.shadow") version "8.1.0"
     application
 }
 
@@ -32,11 +30,22 @@ dependencies {
 }
 
 application {
-    // Define the main class for the application.
     mainClass.set("com.domanskii.homealarmbot.AppKt")
 }
 
 tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+    // Otherwise you'll get a "No main manifest attribute" error
+    manifest {
+        attributes["Main-Class"] = "com.domanskii.homealarmbot.AppKt"
+    }
+}
+
+tasks.shadowJar {
+    minimize {
+        exclude(dependency("ch.qos.logback:.*:.*"))
+    }
 }
