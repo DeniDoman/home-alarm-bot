@@ -43,9 +43,3 @@ tasks.withType<Jar> {
         attributes["Main-Class"] = "com.domanskii.homealarmbot.AppKt"
     }
 }
-
-tasks.shadowJar {
-    minimize {
-        exclude(dependency("ch.qos.logback:.*:.*"))
-    }
-}
