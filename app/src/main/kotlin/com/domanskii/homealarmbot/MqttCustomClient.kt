@@ -36,9 +36,14 @@ class MqttCustomClient(
 
     fun connect() {
         log.info { "Connecting to MQTT server" }
-        client.setCallback(object : MqttCallback {
+        client.setCallback(object : MqttCallbackExtended {
             override fun connectionLost(cause: Throwable?) {
                 log.error { "Connection to MQTT server has been lost with '$cause' cause" }
+            }
+
+            override fun connectComplete(reconnect: Boolean, serverURI: String?) {
+                log.info { "${if (reconnect) "Reconnect" else "Connect"} to MQTT server completed" }
+                subscribe()
             }
 
             override fun messageArrived(topic: String, message: MqttMessage) {
@@ -50,9 +55,11 @@ class MqttCustomClient(
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
                 log.debug { "Message delivery has completed" }
             }
-
         })
         client.connect(options)
+    }
+
+    private fun subscribe() {
         log.info { "Subscribing to '$mqttIncomeTopic' MQTT topic" }
         client.subscribe(mqttIncomeTopic, 2)
     }
