@@ -9,12 +9,13 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 private val log = KotlinLogging.logger {}
 
 class MqttCustomClient(
-    address: String,
-    clientId: String,
-    username: String,
-    password: String,
     private val messageBus: MessageBus
 ) : Observer {
+    private val address: String = System.getenv("MQTT_ADDRESS")
+    private val username: String = System.getenv("MQTT_USER")
+    private val password: String = System.getenv("MQTT_PASSWORD")
+    private val clientId: String = System.getenv("MQTT_CLIENT_ID")
+
     private val mqttIncomeTopic = "securityAlarm/event"
     private val mqttOutcomeTopic = "homeAlarmBot/message"
     private val messageBusIncomeTopic = "messageBus/messagesFromHomeAlarmBot"
