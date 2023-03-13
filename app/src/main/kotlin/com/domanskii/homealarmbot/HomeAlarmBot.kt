@@ -54,7 +54,7 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) :
         if (BotCommands.values().any { it.name == update.message.text }) {
             sendCommandToMqtt(BotCommands.valueOf(update.message.text))
             tgMessage.text = "Message sent to MQTT!"
-        } else if (update.message.text === "/start") {
+        } else if (update.message.text == "/start") {
             tgMessage.text = "Welcome to HomeAlarm bot!"
         }
 
@@ -102,13 +102,11 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) :
             return
         }
 
-        val inputFile = InputFile(imageData.inputStream(), "photo.jpeg")
-
         tgMessages.forEachIndexed { idx, it ->
             it.chatId = usersList[idx]
             it.replyMarkup = getMarkup()
             it.caption = "\uD83D\uDEA8 ALARM \uD83D\uDEA8"
-            it.photo = inputFile
+            it.photo = InputFile(imageData.inputStream(), "photo.jpeg")
 
             try {
                 log.debug { "Sending notification about '$message' MQTT message to '${it.chatId}' Telegram chat" }
