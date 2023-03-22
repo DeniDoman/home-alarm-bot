@@ -16,8 +16,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 
 private val log = KotlinLogging.logger {}
 
-class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) :
-    TelegramLongPollingBot(botToken), Observer {
+class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) : TelegramLongPollingBot(botToken), Observer {
     private val usersList: List<String> = System.getenv("USERS_LIST").split(",")
 
     private val messageBusIncomeTopic = "messageBus/eventsFromMqtt"
@@ -94,8 +93,7 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) :
         val tgMessages = List(usersList.size) { SendPhoto() }
         val imageData: ByteArray
         try {
-            imageData =
-                HttpImageClient.getImage(imageUrl, imageUser, imagePassword, HttpImageAuth.valueOf(imageAuth))
+            imageData = HttpImageClient.getImage(imageUrl, imageUser, imagePassword, HttpImageAuth.valueOf(imageAuth))
         } catch (e: Exception) {
             log.error(e) { "Error while getting image from camera" }
             sendMessageToTelegram(message)
@@ -142,15 +140,11 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) :
         val buttons = listOf(
             KeyboardRow(
                 listOf(
-                    KeyboardButton(BotCommands.ENABLED_AUTO.name), KeyboardButton(BotCommands.ENABLED_MANUAL.name)
+                    KeyboardButton(BotCommands.DISABLED_MANUAL.name)
                 )
             ), KeyboardRow(
                 listOf(
-                    KeyboardButton(BotCommands.DISABLED_AUTO.name), KeyboardButton(BotCommands.DISABLED_MANUAL.name)
-                )
-            ), KeyboardRow(
-                listOf(
-                    KeyboardButton(BotCommands.ALARM_AUTO.name), KeyboardButton(BotCommands.ALARM_MANUAL.name)
+                    KeyboardButton(BotCommands.ENABLED_AUTO.name), KeyboardButton(BotCommands.DISABLED_AUTO.name)
                 )
             )
         )
