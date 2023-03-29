@@ -50,9 +50,10 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) : Teleg
         val tgMessage = SendMessage()
         tgMessage.text = "Unknown command. Please use one of the commands below."
 
-        if (BotCommands.values().any { it.name == update.message.text }) {
-            sendCommandToMqtt(BotCommands.valueOf(update.message.text))
-            tgMessage.text = "Message sent to MQTT!"
+        val command = BotCommands.from(update.message.text)
+        if (command != null) {
+            sendCommandToMqtt(command)
+            tgMessage.text = "Command sent to MQTT!"
         } else if (update.message.text == "/start") {
             tgMessage.text = "Welcome to HomeAlarm bot!"
         }
@@ -140,11 +141,11 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) : Teleg
         val buttons = listOf(
             KeyboardRow(
                 listOf(
-                    KeyboardButton("❌ ${BotCommands.DISABLED_MANUAL.name}")
+                    KeyboardButton(BotCommands.DISABLED_MANUAL.message)
                 )
             ), KeyboardRow(
                 listOf(
-                    KeyboardButton("✅ ${BotCommands.ENABLED_AUTO.name}"), KeyboardButton("❎ ${BotCommands.DISABLED_AUTO.name}")
+                    KeyboardButton(BotCommands.ENABLED_AUTO.message), KeyboardButton(BotCommands.DISABLED_AUTO.message)
                 )
             )
         )
