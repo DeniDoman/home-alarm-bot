@@ -141,10 +141,6 @@ class HomeAlarmBot(botToken: String, private val messageBus: MessageBus) : Teleg
         val buttons = listOf(
             KeyboardRow(
                 listOf(
-                    KeyboardButton(BotCommands.DISABLED_MANUAL.message)
-                )
-            ), KeyboardRow(
-                listOf(
                     KeyboardButton(BotCommands.ENABLED_AUTO.message), KeyboardButton(BotCommands.DISABLED_AUTO.message)
                 )
             )

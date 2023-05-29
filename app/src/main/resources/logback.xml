@@ -14,7 +14,7 @@
     <appender name="FILE" class="RollingFileAppender">
         <file>logs/homeAlarmBot.log</file>
         <rollingPolicy class="TimeBasedRollingPolicy">
-            <fileNamePattern>homeAlarmBot.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/homeAlarmBot.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>60</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
