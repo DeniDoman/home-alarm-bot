@@ -2,8 +2,7 @@ package com.domanskii.homealarmbot
 
 import com.domanskii.homealarmbot.messagebus.MessageBus
 import mu.KotlinLogging
-import org.telegram.telegrambots.meta.TelegramBotsApi
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
+
 
 private val log = KotlinLogging.logger {}
 
@@ -13,12 +12,11 @@ class App {
         val botToken: String = System.getenv("TELEGRAM_TOKEN")
 
         val messageBus = MessageBus()
-        val botsApi = TelegramBotsApi(DefaultBotSession::class.java)
-        val alarmBot = HomeAlarmBot(botToken, messageBus)
+        val main = Main(botToken, messageBus)
         val mqtt = MqttCustomClient(messageBus)
 
         mqtt.connect()
-        botsApi.registerBot(alarmBot)
+        main.registerBot()
     }
 }
 
@@ -34,6 +32,9 @@ fun assertEnvVariables() {
     val imageUser = System.getenv("IMAGE_USER")
     val imagePassword = System.getenv("IMAGE_PASSWORD")
     val imageAuth = System.getenv("IMAGE_AUTH")
+    val rtspUrl = System.getenv("RTSP_URL")
+    val rtspUser = System.getenv("RTSP_USER")
+    val rtspPassword = System.getenv("RTSP_PASSWORD")
     val mqttAddress = System.getenv("MQTT_ADDRESS")
     val mqttUser = System.getenv("MQTT_USER")
     val mqttPassword = System.getenv("MQTT_PASSWORD")
@@ -54,5 +55,10 @@ fun assertEnvVariables() {
     if (imageAuth != HttpImageAuth.NONE.name) {
         assert(imageUser.isNotBlank())
         assert(imagePassword.isNotBlank())
+    }
+
+    if (rtspUser.isNotBlank() || rtspPassword.isNotBlank()) {
+        assert(rtspUser.isNotBlank())
+        assert(rtspPassword.isNotBlank())
     }
 }

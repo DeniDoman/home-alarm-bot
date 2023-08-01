@@ -20,6 +20,8 @@ dependencies {
     implementation("org.telegram:telegrambots:6.5.0")
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
 
+    implementation("org.bytedeco:javacv-platform:1.5.9")
+
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("io.github.rburgst:okhttp-digest:3.0")
 
@@ -27,6 +29,8 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.4.5")
     implementation("ch.qos.logback:logback-classic:1.4.5")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
