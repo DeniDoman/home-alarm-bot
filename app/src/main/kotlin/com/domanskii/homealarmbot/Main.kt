@@ -34,6 +34,7 @@ class Main(botToken: String, private val messageBus: MessageBus) : Observer {
     }
 
     fun registerBot() {
+        log.info { "Registering Telegram bot" }
         TelegramBotsApi(DefaultBotSession::class.java).registerBot(tgClient)
     }
 

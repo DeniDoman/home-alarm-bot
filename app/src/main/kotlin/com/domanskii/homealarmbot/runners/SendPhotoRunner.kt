@@ -2,6 +2,7 @@ package com.domanskii.homealarmbot
 
 import kotlinx.coroutines.*
 import mu.KotlinLogging
+import java.util.concurrent.atomic.AtomicBoolean
 
 private val log = KotlinLogging.logger {}
 
@@ -10,13 +11,22 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
     private val photoTimeout = 5000L;
     private val scope = CoroutineScope(Dispatchers.IO)
     private var sendPhotoJob: Job? = null
+    private val isRunning = AtomicBoolean(true)
+    
     
     fun start() {
-        log.debug { "Starting photo taking..." }
-        if (sendPhotoJob?.isActive == true) return
+        log.debug { "Start taking photos..." }
+        if (imageUrl.isBlank()) {
+            log.debug { "imageUrl is not defined, taking photos is skipped" }
+            return
+        }
+        if (sendPhotoJob?.isActive == true) {
+            log.debug { "sendPhotoJob is already active" }
+            return
+        }
         
         sendPhotoJob = scope.launch {
-            while (isActive) {
+            while (isRunning.get()) {
                 sendPhoto()
                 delay(photoTimeout)
             }
@@ -24,7 +34,8 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
     }
     
     fun stop() {
-        sendPhotoJob?.cancel()
+        log.debug { "Stop taking photos..." }
+        isRunning.set(false)
     }
 
     private fun sendPhoto() {

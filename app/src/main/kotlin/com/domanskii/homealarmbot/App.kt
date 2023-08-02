@@ -27,6 +27,8 @@ fun main() {
 }
 
 fun assertEnvVariables() {
+    log.debug { "Asserting ENV variables..." }
+
     val tgToken = System.getenv("TELEGRAM_TOKEN")
     val imageUrl = System.getenv("IMAGE_URL")
     val imageUser = System.getenv("IMAGE_USER")

@@ -32,6 +32,7 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
     }
 
     fun stop() {
+        log.debug { "Stop video recording..." }
         isRunning.set(false)
     }
 
