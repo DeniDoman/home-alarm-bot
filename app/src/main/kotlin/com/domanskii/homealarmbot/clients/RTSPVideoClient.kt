@@ -11,8 +11,7 @@ private val log = KotlinLogging.logger {}
 
 class RTSPVideoClient {
     companion object {
-        fun getVideo(rtspUrl: String): ByteArray {
-            val recordingTime = 15
+        fun getVideo(rtspUrl: String, recordingTime: Int): ByteArray {
             val frameRate = 30.0
 
             log.debug { "Recording $recordingTime seconds video..." }

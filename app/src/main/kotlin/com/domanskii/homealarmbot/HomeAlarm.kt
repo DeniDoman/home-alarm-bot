@@ -19,14 +19,15 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
     private val imagePassword = System.getenv("IMAGE_PASSWORD") ?: ""
     private val imageAuth = System.getenv("IMAGE_AUTH") ?: ""
 
-    private val videoUrl = System.getenv("VIDEO_URL") ?: ""
-    private val videoUser = System.getenv("VIDEO_USER") ?: ""
-    private val videoPassword = System.getenv("VIDEO_PASSWORD") ?: ""
+    private val rtspUrl = System.getenv("RTSP_URL") ?: ""
+    private val rtspUser = System.getenv("RTSP_USER") ?: ""
+    private val rtspPassword = System.getenv("RTSP_PASSWORD") ?: ""
+    private val rtspClipLength = System.getenv("RTSP_CLIP_LENGTH") ?: "15"
 
     private val tgClient = TelegramClient(botToken, usersList, ::handleTgMessage)
 
     private val sendPhotoRunner = SendPhotoRunner(tgClient, imageUrl, imageUser, imagePassword, imageAuth)
-    private val sendVideoRunner = SendVideoRunner(tgClient, videoUrl, videoUser, videoPassword)
+    private val sendVideoRunner = SendVideoRunner(tgClient, rtspUrl, rtspUser, rtspPassword, rtspClipLength.toInt())
 
     private val messageBusIncomeTopic = "messageBus/eventsFromMqtt"
     private val messageBusOutcomeTopic = "messageBus/messagesFromHomeAlarmBot"

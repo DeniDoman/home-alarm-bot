@@ -39,6 +39,7 @@ fun assertEnvVariables() {
     val rtspUrl = System.getenv("RTSP_URL")
     val rtspUser = System.getenv("RTSP_USER")
     val rtspPassword = System.getenv("RTSP_PASSWORD")
+    val rtspClipLength = System.getenv("RTSP_CLIP_LENGTH")
     val mqttAddress = System.getenv("MQTT_ADDRESS")
     val mqttUser = System.getenv("MQTT_USER")
     val mqttPassword = System.getenv("MQTT_PASSWORD")
@@ -64,5 +65,9 @@ fun assertEnvVariables() {
     if (rtspUser.isNotBlank() || rtspPassword.isNotBlank()) {
         assert(rtspUser.isNotBlank())
         assert(rtspPassword.isNotBlank())
+    }
+
+    if (rtspClipLength.isNotBlank()) {
+        assert(rtspClipLength.toIntOrNull() != null)
     }
 }
