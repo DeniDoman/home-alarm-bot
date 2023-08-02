@@ -31,19 +31,19 @@ fun main() {
 fun assertEnvVariables() {
     log.debug { "Asserting ENV variables..." }
 
-    val tgToken = System.getenv("TELEGRAM_TOKEN")
-    val imageUrl = System.getenv("IMAGE_URL")
-    val imageUser = System.getenv("IMAGE_USER")
-    val imagePassword = System.getenv("IMAGE_PASSWORD")
-    val imageAuth = System.getenv("IMAGE_AUTH")
-    val rtspUrl = System.getenv("RTSP_URL")
-    val rtspUser = System.getenv("RTSP_USER")
-    val rtspPassword = System.getenv("RTSP_PASSWORD")
-    val rtspClipLength = System.getenv("RTSP_CLIP_LENGTH")
-    val mqttAddress = System.getenv("MQTT_ADDRESS")
-    val mqttUser = System.getenv("MQTT_USER")
-    val mqttPassword = System.getenv("MQTT_PASSWORD")
-    val mqttClientId = System.getenv("MQTT_CLIENT_ID")
+    val tgToken = System.getenv("TELEGRAM_TOKEN") ?: ""
+    val imageUrl = System.getenv("IMAGE_URL") ?: ""
+    val imageUser = System.getenv("IMAGE_USER") ?: ""
+    val imagePassword = System.getenv("IMAGE_PASSWORD") ?: ""
+    val imageAuth = System.getenv("IMAGE_AUTH") ?: ""
+    val rtspUrl = System.getenv("RTSP_URL") ?: ""
+    val rtspUser = System.getenv("RTSP_USER") ?: ""
+    val rtspPassword = System.getenv("RTSP_PASSWORD") ?: ""
+    val rtspClipLength = System.getenv("RTSP_CLIP_LENGTH") ?: ""
+    val mqttAddress = System.getenv("MQTT_ADDRESS") ?: ""
+    val mqttUser = System.getenv("MQTT_USER") ?: ""
+    val mqttPassword = System.getenv("MQTT_PASSWORD") ?: ""
+    val mqttClientId = System.getenv("MQTT_CLIENT_ID") ?: ""
     val usersList = System.getenv("USERS_LIST").split(",")
 
     assert(tgToken.isNotBlank())
@@ -55,19 +55,21 @@ fun assertEnvVariables() {
 
     if (imageUrl.isNotBlank()) {
         assert(HttpImageAuth.values().any { it.name == imageAuth })
+
+        if (imageAuth != HttpImageAuth.NONE.name) {
+            assert(imageUser.isNotBlank())
+            assert(imagePassword.isNotBlank())
+        }
     }
 
-    if (imageAuth != HttpImageAuth.NONE.name) {
-        assert(imageUser.isNotBlank())
-        assert(imagePassword.isNotBlank())
-    }
+    if (rtspUrl.isNotBlank()) {
+        if (rtspUser.isNotBlank() || rtspPassword.isNotBlank()) {
+            assert(rtspUser.isNotBlank())
+            assert(rtspPassword.isNotBlank())
+        }
 
-    if (rtspUser.isNotBlank() || rtspPassword.isNotBlank()) {
-        assert(rtspUser.isNotBlank())
-        assert(rtspPassword.isNotBlank())
-    }
-
-    if (rtspClipLength.isNotBlank()) {
-        assert(rtspClipLength.toIntOrNull() != null)
+        if (rtspClipLength.isNotBlank()) {
+            assert(rtspClipLength.toIntOrNull() != null)
+        }
     }
 }

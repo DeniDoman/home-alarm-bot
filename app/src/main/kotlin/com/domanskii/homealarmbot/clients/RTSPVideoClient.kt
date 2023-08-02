@@ -1,10 +1,11 @@
 package com.domanskii.homealarmbot.clients
 
 import mu.KotlinLogging
+import org.bytedeco.ffmpeg.global.avcodec
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
-import org.bytedeco.javacv.Frame
-import java.io.ByteArrayOutputStream
+import java.io.File
+import java.nio.file.Files
 
 
 private val log = KotlinLogging.logger {}
@@ -12,32 +13,38 @@ private val log = KotlinLogging.logger {}
 class RTSPVideoClient {
     companion object {
         fun getVideo(rtspUrl: String, recordingTime: Int): ByteArray {
-            val frameRate = 30.0
-
             log.debug { "Recording $recordingTime seconds video..." }
 
             val grabber = FFmpegFrameGrabber(rtspUrl)
+            val intermediateFile = "temp_output.mp4"
+
+            grabber.audioStream = Int.MAX_VALUE
             grabber.start()
 
-            val outputStream = ByteArrayOutputStream()
-            val recorder = FFmpegFrameRecorder(outputStream, grabber.imageWidth, grabber.imageHeight)
-
-            recorder.videoCodec = grabber.videoCodec
+            // Use intermediate file for recording
+            val recorder = FFmpegFrameRecorder(intermediateFile, grabber.imageWidth, grabber.imageHeight)
+            recorder.videoCodec = avcodec.AV_CODEC_ID_H264
             recorder.format = "mp4"
-            recorder.frameRate = frameRate
+            recorder.frameRate = grabber.frameRate
             recorder.start()
 
-            val start = System.currentTimeMillis()
+            val startTime = System.currentTimeMillis()
 
-            while (System.currentTimeMillis() - start < recordingTime * 1000) {
-                val frame: Frame = grabber.grab() ?: break
+            while (System.currentTimeMillis() - startTime < recordingTime * 1000) {
+                val frame = grabber.grabFrame() ?: break
                 recorder.record(frame)
             }
 
             recorder.stop()
             grabber.stop()
 
-            return outputStream.toByteArray()
+            // Read the intermediate file into a ByteArray
+            val byteArray = Files.readAllBytes(File(intermediateFile).toPath())
+
+            // Delete the intermediate file
+            File(intermediateFile).delete()
+
+            return byteArray
         }
     }
 }
