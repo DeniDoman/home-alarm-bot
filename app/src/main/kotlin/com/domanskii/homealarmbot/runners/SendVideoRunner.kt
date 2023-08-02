@@ -28,6 +28,7 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
 
         sendVideoJob = scope.launch {
             while (isRunning.get()) {
+                log.debug { "Sending video; isRunning == ${isRunning.get()}" }
                 sendVideo()
             }
         }
@@ -46,6 +47,7 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
         
         val videoData: ByteArray
         try {
+            log.debug { "Getting video from RTSP url $url" }
             videoData = RTSPVideoClient.getVideo(finalUrl)
         } catch (e: Exception) {
             log.error(e) { "Error while recording video from camera" }

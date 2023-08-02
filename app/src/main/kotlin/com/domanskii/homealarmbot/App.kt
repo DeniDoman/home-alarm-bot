@@ -14,7 +14,7 @@ class App {
         val botToken: String = System.getenv("TELEGRAM_TOKEN")
 
         val messageBus = MessageBus()
-        val main = Main(botToken, messageBus)
+        val main = HomeAlarm(botToken, messageBus)
         val mqtt = MqttCustomClient(messageBus)
 
         mqtt.connect()

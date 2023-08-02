@@ -30,6 +30,7 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
         
         sendPhotoJob = scope.launch {
             while (isRunning.get()) {
+                log.debug { "Sending photo; isRunning == ${isRunning.get()}" }
                 sendPhoto()
                 delay(photoTimeout)
             }

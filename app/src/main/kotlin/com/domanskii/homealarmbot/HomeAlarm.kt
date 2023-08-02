@@ -12,7 +12,7 @@ import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
 
-class Main(botToken: String, private val messageBus: MessageBus) : Observer {
+class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer {
     private val usersList: List<String> = System.getenv("USERS_LIST").split(",")
     private val imageUrl = System.getenv("IMAGE_URL") ?: ""
     private val imageUser = System.getenv("IMAGE_USER") ?: ""
@@ -80,11 +80,13 @@ class Main(botToken: String, private val messageBus: MessageBus) : Observer {
     }
 
     private fun handleAlarmStart() {
+        log.debug { "Handling alarm start" }
         sendPhotoRunner.start()
         sendVideoRunner.start()
     }
 
     private fun handleAlarmStop() {
+        log.debug { "Handling alarm stop" }
         sendPhotoRunner.stop()
         sendVideoRunner.stop()
     }
