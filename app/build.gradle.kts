@@ -9,6 +9,8 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
     id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("java-library")
+    id("org.bytedeco.gradle-javacpp-platform") version "1.5.9"
     application
 }
 
@@ -34,6 +36,10 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
+}
+
+ext {
+    set("javacppPlatform", "linux-x86_64")
 }
 
 application {
