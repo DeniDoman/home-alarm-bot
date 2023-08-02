@@ -1,7 +1,10 @@
 package com.domanskii.homealarmbot
 
+import com.domanskii.homealarmbot.clients.TelegramClient
 import com.domanskii.homealarmbot.messagebus.MessageBus
 import com.domanskii.homealarmbot.messagebus.Observer
+import com.domanskii.homealarmbot.runners.SendPhotoRunner
+import com.domanskii.homealarmbot.runners.SendVideoRunner
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 import mu.KotlinLogging

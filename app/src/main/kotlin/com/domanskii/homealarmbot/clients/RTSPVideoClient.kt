@@ -1,4 +1,4 @@
-package com.domanskii.homealarmbot
+package com.domanskii.homealarmbot.clients
 
 import mu.KotlinLogging
 import org.bytedeco.javacv.FFmpegFrameGrabber

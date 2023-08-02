@@ -1,5 +1,6 @@
-package com.domanskii.homealarmbot
+package com.domanskii.homealarmbot.clients
 
+import com.domanskii.homealarmbot.BotCommands
 import mu.KotlinLogging
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage

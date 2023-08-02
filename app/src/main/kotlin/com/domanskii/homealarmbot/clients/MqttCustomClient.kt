@@ -1,4 +1,4 @@
-package com.domanskii.homealarmbot
+package com.domanskii.homealarmbot.clients
 
 import com.domanskii.homealarmbot.messagebus.MessageBus
 import com.domanskii.homealarmbot.messagebus.Observer

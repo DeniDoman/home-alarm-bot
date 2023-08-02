@@ -1,5 +1,7 @@
-package com.domanskii.homealarmbot
+package com.domanskii.homealarmbot.runners
 
+import com.domanskii.homealarmbot.clients.RTSPVideoClient
+import com.domanskii.homealarmbot.clients.TelegramClient
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import java.util.concurrent.atomic.AtomicBoolean

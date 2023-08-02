@@ -1,5 +1,7 @@
 package com.domanskii.homealarmbot
 
+import com.domanskii.homealarmbot.clients.HttpImageAuth
+import com.domanskii.homealarmbot.clients.MqttCustomClient
 import com.domanskii.homealarmbot.messagebus.MessageBus
 import mu.KotlinLogging
 

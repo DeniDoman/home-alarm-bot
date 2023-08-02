@@ -1,4 +1,4 @@
-package com.domanskii.homealarmbot
+package com.domanskii.homealarmbot.clients
 
 import com.burgstaller.okhttp.AuthenticationCacheInterceptor
 import com.burgstaller.okhttp.CachingAuthenticatorDecorator
