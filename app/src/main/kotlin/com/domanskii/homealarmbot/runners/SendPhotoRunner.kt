@@ -15,7 +15,7 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
     
     
     fun start() {
-        log.debug { "Start taking photos..." }
+        log.debug { "Start taking photos each $imageInterval seconds..." }
         if (imageUrl.isBlank()) {
             log.debug { "imageUrl is not defined, taking photos is skipped" }
             return
@@ -30,7 +30,7 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
             while (isRunning) {
                 log.debug { "Sending photo; isRunning == $isRunning" }
                 sendPhoto()
-                delay(imageInterval.toLong())
+                delay(imageInterval.toLong() * 1000)
             }
         }
     }
