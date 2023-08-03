@@ -8,9 +8,7 @@ import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
 
-class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl: String, private val imageUser: String, private val imagePassword: String, private val imageAuth: String) {
-    
-    private val photoTimeout = 5000L;
+class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl: String, private val imageUser: String, private val imagePassword: String, private val imageAuth: String, private val imageInterval: Int) {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var sendPhotoJob: Job? = null
     @Volatile private var isRunning = true
@@ -27,11 +25,12 @@ class SendPhotoRunner(private val tgClient: TelegramClient, private val imageUrl
             return
         }
         
+        isRunning = true
         sendPhotoJob = scope.launch {
             while (isRunning) {
                 log.debug { "Sending photo; isRunning == $isRunning" }
                 sendPhoto()
-                delay(photoTimeout)
+                delay(imageInterval.toLong())
             }
         }
     }

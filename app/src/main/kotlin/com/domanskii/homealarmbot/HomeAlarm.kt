@@ -18,6 +18,7 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
     private val imageUser = System.getenv("IMAGE_USER") ?: ""
     private val imagePassword = System.getenv("IMAGE_PASSWORD") ?: ""
     private val imageAuth = System.getenv("IMAGE_AUTH") ?: ""
+    private val imageInterval = System.getenv("IMAGE_INTERVAL") ?: "5"
 
     private val rtspUrl = System.getenv("RTSP_URL") ?: ""
     private val rtspUser = System.getenv("RTSP_USER") ?: ""
@@ -26,7 +27,7 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
 
     private val tgClient = TelegramClient(botToken, usersList, ::handleTgMessage)
 
-    private val sendPhotoRunner = SendPhotoRunner(tgClient, imageUrl, imageUser, imagePassword, imageAuth)
+    private val sendPhotoRunner = SendPhotoRunner(tgClient, imageUrl, imageUser, imagePassword, imageAuth, imageInterval.toInt())
     private val sendVideoRunner = SendVideoRunner(tgClient, rtspUrl, rtspUser, rtspPassword, rtspClipLength.toInt())
 
     private val messageBusIncomeTopic = "messageBus/eventsFromMqtt"
@@ -76,8 +77,8 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
         when (message) {
             BotCommands.ALARM_AUTO.name, BotCommands.ALARM_MANUAL.name -> handleAlarmStart()
             BotCommands.DISABLED_AUTO.name, BotCommands.DISABLED_MANUAL.name, BotCommands.ENABLED_AUTO.name, BotCommands.ENABLED_MANUAL.name -> handleAlarmStop()
-            else -> tgClient.sendMessage(message)
         }
+        tgClient.sendMessage(message)
     }
 
     private fun handleAlarmStart() {

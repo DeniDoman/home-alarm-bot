@@ -24,6 +24,7 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
             return
         }
 
+        isRunning = true
         sendVideoJob = scope.launch {
             while (isRunning) {
                 log.debug { "Sending video; isRunning == $isRunning" }

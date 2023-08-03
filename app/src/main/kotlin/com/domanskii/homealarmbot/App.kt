@@ -36,6 +36,7 @@ fun assertEnvVariables() {
     val imageUser = System.getenv("IMAGE_USER") ?: ""
     val imagePassword = System.getenv("IMAGE_PASSWORD") ?: ""
     val imageAuth = System.getenv("IMAGE_AUTH") ?: ""
+    val imageInterval = System.getenv("IMAGE_INTERVAL") ?: ""
     val rtspUrl = System.getenv("RTSP_URL") ?: ""
     val rtspUser = System.getenv("RTSP_USER") ?: ""
     val rtspPassword = System.getenv("RTSP_PASSWORD") ?: ""
@@ -59,6 +60,10 @@ fun assertEnvVariables() {
         if (imageAuth != HttpImageAuth.NONE.name) {
             assert(imageUser.isNotBlank())
             assert(imagePassword.isNotBlank())
+        }
+
+        if (imageInterval.isNotBlank()) {
+            assert(imageInterval.toIntOrNull() != null)
         }
     }
 
