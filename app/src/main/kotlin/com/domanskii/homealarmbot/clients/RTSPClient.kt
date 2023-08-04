@@ -2,6 +2,7 @@ package com.domanskii.homealarmbot.clients
 
 import mu.KotlinLogging
 import org.bytedeco.ffmpeg.global.avcodec
+import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
 import org.bytedeco.javacv.Java2DFrameConverter
@@ -23,6 +24,7 @@ class RTSPClient {
             val converter = Java2DFrameConverter()
             val byteArrayOutputStream = ByteArrayOutputStream()
 
+            avutil.av_log_set_level(avutil.AV_LOG_QUIET)
             grabber.audioStream = Int.MAX_VALUE
             grabber.start()
 
