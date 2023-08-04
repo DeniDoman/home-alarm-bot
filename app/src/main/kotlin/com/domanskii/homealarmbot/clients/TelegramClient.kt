@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 
 private val log = KotlinLogging.logger {}
 
-class TelegramClient(botToken: String, private val usersList: List<String>, private val onTelegramMessage: (id: String, userName: String, chatId: String, message: String) -> Unit) : TelegramLongPollingBot(botToken) {
+class TelegramClient(botToken: String, private val chatsList: List<String>, private val onTelegramMessage: (id: String, userName: String, chatId: String, message: String) -> Unit) : TelegramLongPollingBot(botToken) {
     override fun getBotUsername(): String {
         return "HomeAlarmBot"
     }
@@ -30,13 +30,13 @@ class TelegramClient(botToken: String, private val usersList: List<String>, priv
         onTelegramMessage(update.message.from.id.toString(), update.message.from.userName, update.message.chatId.toString(), update.message.text)
     }
 
-    fun sendMessage(message: String, users: List<String>? = null) {
-        val sendList = users ?: this.usersList
+    fun sendText(message: String, chats: List<String>? = null) {
+        val sendList = chats ?: this.chatsList
         val tgMessages = List(sendList.size) { SendMessage() }
         tgMessages.forEachIndexed { idx, it ->
             it.chatId = sendList[idx]
             it.replyMarkup = getMarkup()
-            it.text = "Event: $message"
+            it.text = message
 
             try {
                 log.debug { "Sending a message '$message' to '${it.chatId}' Telegram chat" }
@@ -48,11 +48,11 @@ class TelegramClient(botToken: String, private val usersList: List<String>, priv
     }
     
     fun sendPhoto(imageData: ByteArray) {
-        val tgMessages = List(usersList.size) { SendPhoto() }
+        val tgMessages = List(chatsList.size) { SendPhoto() }
         tgMessages.forEachIndexed { idx, it ->
-            it.chatId = usersList[idx]
+            it.chatId = chatsList[idx]
             it.replyMarkup = getMarkup()
-            it.caption = "\uD83D\uDEA8 ALARM \uD83D\uDEA8"
+            it.caption = "📸"
             it.photo = InputFile(imageData.inputStream(), "photo.jpeg")
 
             try {
@@ -65,11 +65,11 @@ class TelegramClient(botToken: String, private val usersList: List<String>, priv
     }
     
     fun sendVideo(videoData: ByteArray) {
-        val tgMessages = List(usersList.size) { SendVideo() }
+        val tgMessages = List(chatsList.size) { SendVideo() }
         tgMessages.forEachIndexed { idx, it ->
-            it.chatId = usersList[idx]
+            it.chatId = chatsList[idx]
             it.replyMarkup = getMarkup()
-            it.caption = "\uD83D\uDEA8 VIDEO \uD83D\uDEA8"
+            it.caption = "🎬"
             it.video = InputFile(videoData.inputStream(), "video.mp4")
 
             try {

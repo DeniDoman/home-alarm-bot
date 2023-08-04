@@ -1,6 +1,6 @@
 package com.domanskii.homealarmbot.runners
 
-import com.domanskii.homealarmbot.clients.RTSPVideoClient
+import com.domanskii.homealarmbot.clients.RTSPClient
 import com.domanskii.homealarmbot.clients.TelegramClient
 import kotlinx.coroutines.*
 import mu.KotlinLogging
@@ -8,15 +8,19 @@ import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
 
-class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl: String, private val rtspUser: String, private val rtspPassword: String, private val clipLength: Int) {
+class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl: String, private val rtspUser: String, private val rtspPassword: String, private val rtspClipLength: Int) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
     private var sendVideoJob: Job? = null
     @Volatile private var isRunning = true
     fun start() {
-        log.debug { "Starting video recording..." }
+        log.debug { "Starting taking video..." }
         if (rtspUrl.isBlank()) {
-            log.debug { "rtspUrl is not defined, video record is skipped" }
+            log.debug { "rtspUrl is not defined, taking video is skipped" }
+            return
+        }
+        if (rtspClipLength == 0) {
+            log.debug { "rtspClipLength is 0, taking video is skipped" }
             return
         }
         if (sendVideoJob?.isActive == true) {
@@ -34,7 +38,7 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
     }
 
     fun stop() {
-        log.debug { "Stop video recording..." }
+        log.debug { "Stop video taking..." }
         isRunning = false
     }
 
@@ -47,10 +51,10 @@ class SendVideoRunner(private val tgClient: TelegramClient, private val rtspUrl:
         val videoData: ByteArray
         try {
             log.debug { "Getting video from RTSP url $url" }
-            videoData = RTSPVideoClient.getVideo(finalUrl, clipLength)
+            videoData = RTSPClient.getVideo(finalUrl, rtspClipLength)
         } catch (e: Exception) {
-            log.error(e) { "Error while recording video from camera" }
-            tgClient.sendMessage("Error while recording video from camera")
+            log.error(e) { "Error while taking video from camera" }
+            tgClient.sendText("Error while taking video from camera")
             return
         }
 

@@ -3,6 +3,7 @@ package com.domanskii.homealarmbot
 import com.domanskii.homealarmbot.clients.TelegramClient
 import com.domanskii.homealarmbot.messagebus.MessageBus
 import com.domanskii.homealarmbot.messagebus.Observer
+import com.domanskii.homealarmbot.runners.SendAlertRunner
 import com.domanskii.homealarmbot.runners.SendPhotoRunner
 import com.domanskii.homealarmbot.runners.SendVideoRunner
 import org.telegram.telegrambots.meta.TelegramBotsApi
@@ -13,23 +14,17 @@ import mu.KotlinLogging
 private val log = KotlinLogging.logger {}
 
 class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer {
-    private val usersList: List<String> = System.getenv("USERS_LIST").split(",")
-    private val imageUrl = System.getenv("IMAGE_URL") ?: ""
-    private val imageUser = System.getenv("IMAGE_USER") ?: ""
-    private val imagePassword = System.getenv("IMAGE_PASSWORD") ?: ""
-    private val imageAuth = System.getenv("IMAGE_AUTH") ?: ""
-    private val imageInterval = System.getenv("IMAGE_INTERVAL") ?: "5"
-
+    private val chatsList: List<String> = System.getenv("CHATS_LIST").split(",")
+    private val tgClient = TelegramClient(botToken, chatsList, ::handleTgMessage)
+    private val alertInterval = System.getenv("ALERT_INTERVAL") ?: "5"
     private val rtspUrl = System.getenv("RTSP_URL") ?: ""
     private val rtspUser = System.getenv("RTSP_USER") ?: ""
     private val rtspPassword = System.getenv("RTSP_PASSWORD") ?: ""
     private val rtspClipLength = System.getenv("RTSP_CLIP_LENGTH") ?: "15"
-
-    private val tgClient = TelegramClient(botToken, usersList, ::handleTgMessage)
-
-    private val sendPhotoRunner = SendPhotoRunner(tgClient, imageUrl, imageUser, imagePassword, imageAuth, imageInterval.toInt())
+    private val rtspImageInterval = System.getenv("RTSP_IMAGE_INTERVAL") ?: "5"
+    private val sendAlertRunner = SendAlertRunner(tgClient, alertInterval.toInt())
+    private val sendPhotoRunner = SendPhotoRunner(tgClient, rtspUrl, rtspUser, rtspPassword, rtspImageInterval.toInt())
     private val sendVideoRunner = SendVideoRunner(tgClient, rtspUrl, rtspUser, rtspPassword, rtspClipLength.toInt())
-
     private val messageBusIncomeTopic = "messageBus/eventsFromMqtt"
     private val messageBusOutcomeTopic = "messageBus/messagesFromHomeAlarmBot"
 
@@ -44,7 +39,7 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
     }
 
     private fun handleTgMessage(id: String, userName: String, chatId: String, message: String) {
-        if (!usersList.contains(id)) {
+        if (!chatsList.contains(id)) {
             log.info { "Message from an unknown user '${id}' ignored" }
             return
         }
@@ -61,7 +56,7 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
         }
 
         log.debug { "Sending confirmation message to '${userName}' user" }
-        tgClient.sendMessage(text, listOf(chatId))
+        tgClient.sendText(text, listOf(chatId))
     }
 
     override fun onMessage(topic: String, message: String) {
@@ -78,17 +73,19 @@ class HomeAlarm(botToken: String, private val messageBus: MessageBus) : Observer
             BotCommands.ALARM_AUTO.name, BotCommands.ALARM_MANUAL.name -> handleAlarmStart()
             BotCommands.DISABLED_AUTO.name, BotCommands.DISABLED_MANUAL.name, BotCommands.ENABLED_AUTO.name, BotCommands.ENABLED_MANUAL.name -> handleAlarmStop()
         }
-        tgClient.sendMessage(message)
+        tgClient.sendText(message)
     }
 
     private fun handleAlarmStart() {
         log.debug { "Handling alarm start" }
+        sendAlertRunner.start()
         sendPhotoRunner.start()
         sendVideoRunner.start()
     }
 
     private fun handleAlarmStop() {
         log.debug { "Handling alarm stop" }
+        sendAlertRunner.stop()
         sendPhotoRunner.stop()
         sendVideoRunner.stop()
     }
